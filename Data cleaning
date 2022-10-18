@@ -1,0 +1,359 @@
+		                        Passo a passo
+
+	    First - Data cleaning to help  analyze
+1.	1.1 I downloaded the csv from August 2020 to July 2021 to get a good idea
+         Aug_20 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202008-divvy-tripdata.csv")
+         
+        Sep_20 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202009-divvy-tripdata.csv")
+
+        Oct_20 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202010-divvy-tripdata.csv")
+
+        Nov_20 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202011-divvy-tripdata.csv")
+
+        Dec_20 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202012-divvy-tripdata.csv")
+
+        Jan_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202101-divvy-tripdata.csv")
+
+        Fev_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202102-divvy-tripdata.csv")
+
+        Mar_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202103-divvy-tripdata.csv")
+
+        Apr_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202104-divvy-tripdata.csv")
+
+        May_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202105-divvy-tripdata.csv")
+
+        Jun_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202106-divvy-tripdata.csv")
+
+        Jul_21 <- read.csv("C:\\Users\\PICHAU\\Documents\\Portfolio\\202107-divvy-tripdata.csv")
+        
+     1.2 I changed the string type, to be formatted in all columns just right.
+                 
+        Aug_20 <- mutate(
+          Aug_20, 
+          start_station_id = as.character(start_station_id),
+          end_station_id = as.character(end_station_id)
+          )
+
+      
+        Sep_20 <- mutate(
+          Sep_20, 
+          start_station_id = as.character(start_station_id),
+          end_station_id = as.character(end_station_id)
+          )
+
+       
+        Oct_20 <- mutate(
+          Oct_20, 
+          start_station_id = as.character(start_station_id),
+          end_station_id = as.character(end_station_id)
+          )
+
+       
+        Nov_20 <- mutate(
+          Nov_20, 
+          start_station_id = as.character(start_station_id),
+          end_station_id = as.character(end_station_id)
+          )
+          
+     1.3	I created a variable grouping all the files.
+          all_trips <- bind_rows(
+            Aug_20, Sep_20, Oct_20, Nov_20, Dec_20, 
+            Jan_21, Feb_21, Mar_21, Apr_21, May_21, Jun_21, Jul_21
+          )
+     
+     1.4  I changed the start and end string type.
+              
+          all_trips$started_at <- as.POSIXct(
+            all_trips$started_at, 
+            format = "%Y-%m-%d %H:%M:%S"
+           )
+
+          
+          all_trips$ended_at <- as.POSIXct(
+            all_trips$ended_at, 
+            format = "%Y-%m-%d %H:%M:%S"
+           )
+           
+      1.5	I ordered in order of start.
+          all_trips <- all_trips %>%
+            arrange(started_at)
+            
+      1.6	I created a variable for the duration of the races and then turned it to numeric.
+          all_trips$ride_length <- difftime(
+            all_trips$ended_at, 
+            all_trips$started_at,
+            units = "secs"
+          ) 
+          
+          all_trips$ride_length <- as.numeric(
+           as.character(all_trips$ride_length)
+          )
+       
+      1.7 I divided it into time variables such as day, hour, month, day of the week...
+          all_trips$year <- format(
+              all_trips$started_at, 
+              "%Y"
+          )
+
+          
+          all_trips$month <- format(
+              all_trips$started_at, 
+              "%m"
+              )
+
+         
+          all_trips$week <- format(
+            all_trips$started_at,
+            "%W"
+            )
+
+        
+          all_trips$day <- format(
+            all_trips$started_at, 
+            "%d"
+            )
+
+       
+          all_trips$day_of_week <- format(
+            all_trips$started_at, 
+            "%A"
+            )
+
+        
+          all_trips$YMD <- format(
+            all_trips$started_at, 
+            "%Y-%m-%d"
+            )
+
+        
+          all_trips$ToD <- format(
+            all_trips$started_at, 
+            "%H:%M:%S"
+            )
+            
+        1.8	Cleaned up non-existent runs (duration time less than 0, repeated or incomplete variables)
+            1.8.1 - all_trips_cleaned <- all_trips %>%
+              filter(!(ride_length < 0))
+
+            1.8.2 - ride_id_check <- all_trips_cleaned %>%
+              count(ride_id) %>%
+              filter(n > 1)
+
+            1.8.3 - all_trips_cleaned <- all_trips_cleaned %>%
+                filter(
+                  !(is.na(start_station_name) |
+                      start_station_name == "")
+                  ) %>% 
+
+              filter(
+                !(is.na(end_station_name) |
+                    end_station_name == "")
+                )
+                
+         2.	The analysis begins, I separated the types of bike and stations in each month to see which I will use in the future.
+          2.1 rideable_type_check <-all_trips_cleaned %>%
+
+            mutate(
+              year = year(started_at), 
+              month = month(started_at)
+              ) %>%
+
+            group_by(
+              month, 
+              year
+              ) %>%
+
+            select(
+              rideable_type, 
+              month, 
+              year
+              ) %>%
+
+            count(
+              rideable_type
+              )
+              
+          2.2 I created a dataframe to list unique station names
+              station_name_check <- all_trips_cleaned %>%
+                group_by(start_station_name) %>%
+                count(start_station_name) 
+
+          2.3 I went from month to month to see unique stations
+             
+              Aug_2020_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "08"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Sep_2020_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "09"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+            
+            2.4 I created columns for each month in the station name to see if the name appears in the individual month filter
+                  start_station_name
+                  )
+
+              
+              Oct_2020_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "10"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+              
+              Nov_2020_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "11"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Dec_2020_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "12"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Jan_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "01"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+              
+              Feb_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "02"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Mar_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "03"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Apr_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "04"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+              
+              May_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "05"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Jun_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "06"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+
+             
+              Jul_2021_filter <- all_trips_cleaned %>%
+                filter(
+                  month == "07"
+                  ) %>%
+                group_by(
+                  start_station_name
+                  ) %>%
+                count(
+                  start_station_name
+                  )
+                  
+            3.0 I saved everything
+              3.1  Cleaned dataset
+                  fwrite(
+                      all_trips_cleaned, 
+                      "C:\\Users\\PICHAU\\Documents\\Portfolio\\01-03-03 all_trips_cleaned.csv", 
+                      col.names = TRUE,
+                      row.names = FALSE
+                      )
+              
+              3.2 Raw dataset
+                fwrite(
+                  all_trips, 
+                  "C:\\Users\\izzyl\\Documents\\Portfolio\\01. Cyclistic\\03. Analysis\\01-03-04 all_trips_raw.csv",
+                  col.names = TRUE, 
+                  row.names = FALSE
+                  )
+                 
+              3.3 Rideable type check dataset 
+                  fwrite(
+                    rideable_type_check, 
+                    "C:\\Users\\izzyl\\Documents\\Portfolio\\01. Cyclistic\\03. Analysis\\01-03-05 rideable_type_check.csv",
+                    col.names = TRUE, 
+                    row.names = FALSE
+                    )
+                    
+              3.4 Station name check dataset 
+                fwrite(
+                  station_name_check, 
+                  "C:\\Users\\izzyl\\Documents\\Portfolio\\01. Cyclistic\\03. Analysis\\01-03-06 station_name_check.csv",
+                  col.names = TRUE, 
+                  row.names = FALSE
+                  )
