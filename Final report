@@ -1,0 +1,32 @@
+Final report 
+
+1 - Introduction 
+	Established in 2016, Cyclistic is a bike-share offering service located in Chicago, USA. Cyclistic currently offers more than 5,800 bicycles that are geo-tracked and locked into a network of over 690 stations across Chicago. The bikes can be unlocked from one station and returned to another station in the system anytime.The Cyclistic team have recently concluded that annual memberships are more profitable than casual riders. Furthermore, the team have noted that while 30% of users use the bikes for their work commute, the majority of Cyclistic users ride for leisure. This report will assess how existing Cyclistic causal riders can be encouraged to convert to annual memberships.
+
+2 - Process
+	For better analysis, just the data from August 2020 to July 2021 was considered. Due the large size files for .csv files, I used the programming language R for cleaning and processing the large dataset. The idea of it was merging all the months into one, making it faster and easier than if it were all separate. All this procces was documented at the file: data cleaning. It removed duplicated, blanks or below 0 stations or runs.
+
+3 - Analysis
+  3.1 - Most popular stations
+	Image
+	Creating a interactive map showing the bike stations and the number of trips of each of them, was very good for future analysis, because is very clear the difference between the central tourist of Chicago.
+
+  3.2 - Most popular time of the year
+	Image
+	As the graphics showed, the heat map is very bright on weekends where is in theory the most profitable day for Cyclist, and is very clear the difference from 2020 to 2021, due to people get more confident for the COVID-19 pandemic.
+	Image
+	The difference between casual riders to annual riders is very clear too. It is shown that the majority of casuals riders prefer to go at weekendsas opposed to the annual, that prefer going on wednesday probably for the working day, and both of them, are more likely to ride at the summer, probably because of the mid year vacation.
+  3.3 - Most popular time of the day
+	Image	
+	As the bar shows, 17:00 is the most popular time of the day for he Cyclist users probably bexause many of them are returning from work both casual and member.
+	Interestingly it's shown that casual riders use the service more than members at the time between 21:00 and 05:00 probably suggesting that they prefer the bike more than taxi or something like that.
+
+4 - Final recommendations
+	As it was talked before, the proposal of it it's not growing up new users for the app bit instead turing casual riders to annual members ones.
+	The possible ways that it can be done are:
+  4.1 - Digital marketing that shows that bicycles are being used in the daily lives of residents
+	The graphics from that shows the most popular time of the day, indicates that the peak of casual riders and member riders seems to be at the same time, probably because there are casual ones that uses bike to return to home. In this case it is indicated that a digital campaing is created to observe how the Cyclist fits into their everyday life.
+  4.2 - Digital campaign showing the benefits from using a bike in a post COVID-19 pandemic
+	The most popular time of the year concluded that an increase in people using the bike service post COVID-19 pandemic. People now can see the benefits of using a bike after staying home for a long time soing nothing, so a digital campaign can be created into that purpose.
+  4.3 - Notifications and reminders for casual riders showing the benefits of buying the annual membership
+	As it was demonstrated, the benefits of being a member are much better cost-effective than being a casual, so can be created notifications to remind who have the app but are casual ones to buy it.
